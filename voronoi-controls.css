@@ -1,0 +1,136 @@
+/* Voronoi Game of Life Controls Styling */
+
+.controls-panel {
+  background: #d3dae4ed;
+  padding: 20px;
+  border-radius: 5px;
+  font-family: "Verdana", sans-serif;
+  color: #181a1b;
+  line-height: 1.4em;
+  width: 300px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.controls-panel h3 {
+  color: #1a2b3b;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  font-size: 1.2em;
+}
+
+.controls-panel p {
+  margin: 10px 0 5px 0;
+  font-size: 0.9em;
+}
+
+.controls-panel input[type="text"],
+.controls-panel input[type="number"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #c2c0c1;
+  border-radius: 4px;
+  background: #ffffff;
+  margin-bottom: 10px;
+  font-family: "Verdana", sans-serif;
+}
+
+.controls-panel button {
+  background: #c2c0c1a9;
+  border: none;
+  padding: 8px 15px;
+  margin: 5px 0;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: "Verdana", sans-serif;
+  font-size: 0.9em;
+  color: #181a1b;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.controls-panel button:hover {
+  background: #3190e8e0;
+  color: rgb(249, 241, 244);
+}
+
+.controls-panel button:disabled {
+  background: #d4e0dd;
+  color: #8a8a8a;
+  cursor: not-allowed;
+}
+
+/* Fancy Slider Styling */
+.slider-container {
+  width: 100%;
+  margin: 15px 0;
+}
+
+.controls-panel input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: #d4e0dd;
+  outline: none;
+  margin: 10px 0;
+}
+
+.controls-panel input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #3190e8e0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.controls-panel input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #3190e8e0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.controls-panel input[type="range"]::-webkit-slider-thumb:hover {
+  background: #1a2b3b;
+  transform: scale(1.1);
+}
+
+.controls-panel input[type="range"]::-moz-range-thumb:hover {
+  background: #1a2b3b;
+  transform: scale(1.1);
+}
+
+.slider-value {
+  text-align: right;
+  font-size: 0.85em;
+  margin-top: -5px;
+  color: #1a2b3b;
+}
+
+.controls-panel label {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+  cursor: pointer;
+}
+
+.controls-panel input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+/* Sections within controls */
+.control-section {
+  border-bottom: 1px solid #c2c0c1;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+}
+
+.control-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+} 

@@ -5,36 +5,36 @@ let initialized = false;
 let overpopulationLimit, underpopulationLimit, revivalCondition;
 let pointCountInput, hideModeCheckbox;
 let hideMode = false;
+let relaxationFactorSlider; // Add relaxation factor slider
+let startButton; // Make startButton a global variable
+let relaxFactorValue; // To display slider value
 
 function setup() {
-  let canvas = createCanvas(1000, 1000);
-  canvas.position(0, 0);
+  let canvas = createCanvas(800, 800);
+  canvas.parent(select('.canvas-container'));
+  
   frameRate(10); // Lower the frame rate to 10 frames per second
 
-  // Create input elements for rules
+  // Create controls panel
   let controls = createDiv();
-  controls.position(1020, 10);
+  controls.addClass('controls-panel');
+  controls.parent(select('main'));
 
-  createElement('p', 'Number of points:').parent(controls);
-  pointCountInput = createInput('1000').parent(controls);
-
-  createElement('p', 'Overpopulation limit (cells die if neighbors > limit):').parent(controls);
-  overpopulationLimit = createInput('3').parent(controls);
-
-  createElement('p', 'Underpopulation limit (cells die if neighbors < limit):').parent(controls);
-  underpopulationLimit = createInput('2').parent(controls);
-
-  createElement('p', 'Revival condition (cells become alive if neighbors == condition):').parent(controls);
-  revivalCondition = createInput('3').parent(controls);
-
-  hideModeCheckbox = createCheckbox('Hide Mode (no point removal)', false);
-  hideModeCheckbox.parent(controls);
-  hideModeCheckbox.changed(() => {
-    hideMode = hideModeCheckbox.checked();
-  });
-
+  // Initialize section
+  let initSection = createDiv();
+  initSection.addClass('control-section');
+  initSection.parent(controls);
+  
+  createElement('h3', 'Initialize').parent(initSection);
+  
+  createElement('p', 'Number of points:').parent(initSection);
+  pointCountInput = createInput('500').parent(initSection);
+  pointCountInput.attribute('type', 'number');
+  pointCountInput.attribute('min', '100');
+  pointCountInput.attribute('max', '2000');
+  
   let randomFillButton = createButton('Randomly Fill Points');
-  randomFillButton.parent(controls);
+  randomFillButton.parent(initSection);
   randomFillButton.mousePressed(() => {
     let pointCount = int(pointCountInput.value());
     points = [];
@@ -47,12 +47,90 @@ function setup() {
     }
     delaunay = calculateDelaunay(points);
     voronoi = delaunay.voronoi([0, 0, width, height]);
+    startButton.removeAttribute('disabled'); // Enable the start button when points exist
   });
 
-  let startButton = createButton('Start Simulation');
-  startButton.parent(controls);
+  // Rules section
+  let rulesSection = createDiv();
+  rulesSection.addClass('control-section');
+  rulesSection.parent(controls);
+  
+  createElement('h3', 'Game Rules').parent(rulesSection);
+  
+  createElement('p', 'Overpopulation limit:').parent(rulesSection);
+  overpopulationLimit = createInput('5').parent(rulesSection);
+  overpopulationLimit.attribute('type', 'number');
+  overpopulationLimit.attribute('min', '1');
+  overpopulationLimit.attribute('max', '8');
+  
+  createElement('p', 'Underpopulation limit:').parent(rulesSection);
+  underpopulationLimit = createInput('2').parent(rulesSection);
+  underpopulationLimit.attribute('type', 'number');
+  underpopulationLimit.attribute('min', '0');
+  underpopulationLimit.attribute('max', '8');
+  
+  createElement('p', 'Revival condition:').parent(rulesSection);
+  revivalCondition = createInput('2').parent(rulesSection);
+  revivalCondition.attribute('type', 'number');
+  revivalCondition.attribute('min', '1');
+  revivalCondition.attribute('max', '8');
+
+  // Relaxation section
+  let relaxSection = createDiv();
+  relaxSection.addClass('control-section');
+  relaxSection.parent(controls);
+  
+  createElement('h3', 'Visualization').parent(relaxSection);
+  
+  createElement('p', 'Lloyd\'s Relaxation Factor:').parent(relaxSection);
+  
+  let sliderContainer = createDiv();
+  sliderContainer.addClass('slider-container');
+  sliderContainer.parent(relaxSection);
+  
+  relaxationFactorSlider = createSlider(0, 1, 0.2, 0.01);
+  relaxationFactorSlider.parent(sliderContainer);
+  relaxationFactorSlider.style('width', '100%');
+  
+  relaxFactorValue = createDiv('0.20');
+  relaxFactorValue.addClass('slider-value');
+  relaxFactorValue.parent(sliderContainer);
+  
+  let hideLabel = createDiv();
+  hideLabel.parent(relaxSection);
+  hideLabel.addClass('label');
+  
+  hideModeCheckbox = createCheckbox('Hide Mode (no point removal)', false);
+  hideModeCheckbox.parent(hideLabel);
+  hideModeCheckbox.changed(() => {
+    hideMode = hideModeCheckbox.checked();
+  });
+
+  // Simulation controls section
+  let simControlSection = createDiv();
+  simControlSection.addClass('control-section');
+  simControlSection.parent(controls);
+  
+  createElement('h3', 'Simulation Controls').parent(simControlSection);
+  
+  startButton = createButton('Start Simulation');
+  startButton.parent(simControlSection);
   startButton.mousePressed(() => {
-    initialized = true; // Start the simulation when 'Start Simulation' is clicked
+    if (points.length > 0) {
+      initialized = true; // Start the simulation when 'Start Simulation' is clicked
+    }
+  });
+  
+  // Disable the start button initially if no points exist
+  if (points.length === 0) {
+    startButton.attribute('disabled', '');
+  }
+
+  let resetButton = createButton('Reset Simulation');
+  resetButton.parent(simControlSection);
+  resetButton.mousePressed(() => {
+    initialized = false; // Reset the simulation state
+    // Keep the current points but allow editing the states again
   });
 
   delaunay = calculateDelaunay(points);
@@ -62,6 +140,9 @@ function setup() {
 function draw() {
   background(255);
 
+  // Update slider value display
+  relaxFactorValue.html(relaxationFactorSlider.value().toFixed(2));
+
   // Draw Voronoi cells
   let polygons = voronoi.cellPolygons();
   let cells = Array.from(polygons);
@@ -69,7 +150,7 @@ function draw() {
   for (let poly of cells) {
     stroke(0);
     strokeWeight(1);
-    fill(cellStates[poly.index] ? 'black' : 'white'); // Fill based on cell state
+    fill(cellStates[poly.index] ? '#1a2b3b' : '#ffffff'); // Fill based on cell state
     beginShape();
     for (let i = 0; i < poly.length; i++) {
       vertex(poly[i][0], poly[i][1]);
@@ -155,8 +236,11 @@ function draw() {
     centroids.push(centroid);
   }
 
+  // Get the current relaxation factor from the slider
+  let relaxFactor = relaxationFactorSlider.value();
+  
   for (let i = 0; i < points.length; i++) {
-    points[i].lerp(centroids[i], 0.2); // Move points to centroid with relaxation factor 0.2
+    points[i].lerp(centroids[i], relaxFactor); // Use the slider value for relaxation
   }
 
   // Recalculate Voronoi diagram after relaxation
@@ -165,7 +249,7 @@ function draw() {
 }
 
 function mousePressed() {
-  if (!initialized) {
+  if (!initialized && mouseX < width && mouseY < height) {
     let closestIndex = -1;
     let closestDistance = Infinity;
 

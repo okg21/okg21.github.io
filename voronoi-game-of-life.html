@@ -1,13 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voronoi Game of Life</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.dom.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/d3-delaunay@6"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.3.2/math.js"></script>
+  <link rel="stylesheet" href="voronoi-controls.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Verdana", sans-serif;
+      background: #d4e0dd;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    main {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #1a2b3b;
+      text-align: center;
+      margin: 20px 0;
+      font-size: 2.1em;
+    }
+    .canvas-container {
+      margin-right: 20px;
+    }
+  </style>
   <script src="sketch.js"></script>
 </head>
 <body>
-  <main></main>
+  <h1>Voronoi Game of Life</h1>
+  <main>
+    <div class="canvas-container"></div>
+    <!-- Controls will be added here by the sketch.js -->
+  </main>
 </body>
 </html>
