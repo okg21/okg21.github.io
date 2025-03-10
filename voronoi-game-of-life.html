@@ -43,5 +43,33 @@
     <div class="canvas-container"></div>
     <!-- Controls will be added here by the sketch.js -->
   </main>
+
+  <!-- Info Tooltips -->
+  <div id="rules-tooltip" class="tooltip-container">
+    <span class="close-tooltip">&times;</span>
+    <div class="tooltip-header">Game of Life Rules</div>
+    <div class="tooltip-item">Underpopulation: Cells with too few neighbors die from isolation</div>
+    <div class="tooltip-item">Overpopulation: Cells with too many neighbors die from overcrowding</div>
+    <div class="tooltip-item">Revival: Dead cells with exactly the right number of neighbors become alive</div>
+    <div class="tooltip-item">In classic Conway's Game of Life, these values are 2, 3, and 3 respectively</div>
+  </div>
+  
+  <div id="voronoi-tooltip" class="tooltip-container">
+    <span class="close-tooltip">&times;</span>
+    <div class="tooltip-header">Voronoi Diagrams</div>
+    <div class="tooltip-item">Divides space into regions based on distance to points</div>
+    <div class="tooltip-item">Each cell contains all points closest to its generator point</div>
+    <div class="tooltip-item">Lloyd's relaxation moves points toward cell centroids</div>
+    <div class="tooltip-item">Higher relaxation values create more regular hexagonal patterns</div>
+  </div>
+
+  <div id="instructions-tooltip" class="tooltip-container">
+    <span class="close-tooltip">&times;</span>
+    <div class="tooltip-header">How To Use</div>
+    <div class="tooltip-item">Start by generating random points or create your own</div>
+    <div class="tooltip-item">Adjust the rule parameters to change cellular behavior</div>
+    <div class="tooltip-item">Try lower relaxation values for more chaotic patterns</div>
+    <div class="tooltip-item">Use Hide Mode to preserve cell positions even when they die</div>
+  </div>
 </body>
 </html>

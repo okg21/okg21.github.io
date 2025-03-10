@@ -8,12 +8,19 @@ let hideMode = false;
 let relaxationFactorSlider; // Add relaxation factor slider
 let startButton; // Make startButton a global variable
 let relaxFactorValue; // To display slider value
+let currentTooltip = null;
 
 function setup() {
   let canvas = createCanvas(800, 800);
   canvas.parent(select('.canvas-container'));
   
   frameRate(10); // Lower the frame rate to 10 frames per second
+
+  // Setup tooltip close buttons
+  let closeButtons = selectAll('.close-tooltip');
+  for (let btn of closeButtons) {
+    btn.mousePressed(hideAllTooltips);
+  }
 
   // Create controls panel
   let controls = createDiv();
@@ -55,7 +62,15 @@ function setup() {
   rulesSection.addClass('control-section');
   rulesSection.parent(controls);
   
-  createElement('h3', 'Game Rules').parent(rulesSection);
+  let rulesHeader = createElement('h3', 'Game Rules');
+  rulesHeader.parent(rulesSection);
+  
+  // Add info link for game rules
+  let rulesInfoLink = createSpan(' [?]');
+  rulesInfoLink.addClass('info-link');
+  rulesInfoLink.parent(rulesHeader);
+  rulesInfoLink.mouseOver(() => showTooltip('rules-tooltip'));
+  rulesInfoLink.mouseOut(hideAllTooltips);
   
   createElement('p', 'Overpopulation limit:').parent(rulesSection);
   overpopulationLimit = createInput('5').parent(rulesSection);
@@ -80,7 +95,15 @@ function setup() {
   relaxSection.addClass('control-section');
   relaxSection.parent(controls);
   
-  createElement('h3', 'Visualization').parent(relaxSection);
+  let visualHeader = createElement('h3', 'Visualization');
+  visualHeader.parent(relaxSection);
+  
+  // Add info link for Voronoi
+  let voronoiInfoLink = createSpan(' [?]');
+  voronoiInfoLink.addClass('info-link');
+  voronoiInfoLink.parent(visualHeader);
+  voronoiInfoLink.mouseOver(() => showTooltip('voronoi-tooltip'));
+  voronoiInfoLink.mouseOut(hideAllTooltips);
   
   createElement('p', 'Lloyd\'s Relaxation Factor:').parent(relaxSection);
   
@@ -111,7 +134,15 @@ function setup() {
   simControlSection.addClass('control-section');
   simControlSection.parent(controls);
   
-  createElement('h3', 'Simulation Controls').parent(simControlSection);
+  let simHeader = createElement('h3', 'Simulation Controls');
+  simHeader.parent(simControlSection);
+  
+  // Add info link for instructions
+  let instructionsLink = createSpan(' [?]');
+  instructionsLink.addClass('info-link');
+  instructionsLink.parent(simHeader);
+  instructionsLink.mouseOver(() => showTooltip('instructions-tooltip'));
+  instructionsLink.mouseOut(hideAllTooltips);
   
   startButton = createButton('Start Simulation');
   startButton.parent(simControlSection);
@@ -135,6 +166,18 @@ function setup() {
 
   delaunay = calculateDelaunay(points);
   voronoi = delaunay.voronoi([0, 0, width, height]);
+}
+
+// Tooltip management functions
+function showTooltip(tooltipId) {
+  hideAllTooltips();
+  currentTooltip = select('#' + tooltipId);
+  currentTooltip.style('display', 'block');
+}
+
+function hideAllTooltips() {
+  selectAll('.tooltip-container').forEach(tooltip => tooltip.style('display', 'none'));
+  currentTooltip = null;
 }
 
 function draw() {
