@@ -1,0 +1,347 @@
+/* CSS Variables for theme switching */
+:root {
+    --bg-color: #d4e0dd;
+    --content-bg: #d3dae4ed;
+    --header-bg: #c2c0c1a9;
+    --text-color: #181a1b;
+    --accent-color: #7a9b7ae0;
+    --accent-hover: rgb(249, 241, 244);
+    --link-bg: #50545345;
+    --border-color: grey;
+    --code-bg: #2d2d2d;
+    --code-color: #e6e6e6;
+    --code-border: #404040;
+}
+
+[data-theme="dark"] {
+    --bg-color: #1a2420;
+    --content-bg: #242b28ed;
+    --header-bg: #2c2e2ca9;
+    --text-color: #e4e2e1;
+    --accent-color: #6b8a6be0;
+    --accent-hover: rgb(20, 30, 35);
+    --link-bg: #3a403d45;
+    --border-color: #555;
+    --code-bg: #1e1e1e;
+    --code-color: #d4d4d4;
+    --code-border: #444;
+}
+
+/* Dark mode toggle button - styled like footer icons */
+.theme-toggle {
+    background: none !important;
+    border: none;
+    font-size: 1.4em;
+    margin-right: 8px;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: color 0.3s ease;
+    padding: 0;
+}
+
+.theme-toggle i {
+    color: var(--text-color) !important;
+    transition: color 0.3s ease;
+}
+
+.theme-toggle:hover {
+    background: none !important;
+    color: var(--accent-color);
+    transform: none;
+    box-shadow: none;
+}
+
+.theme-toggle:hover i {
+    color: var(--accent-color) !important;
+}
+
+/* Ensure proper inheritance for both light and dark modes */
+[data-theme="dark"] .theme-toggle i {
+    color: var(--text-color) !important;
+}
+
+:root .theme-toggle i {
+    color: var(--text-color) !important;
+}
+
+html {
+    margin: 0px;
+    padding:0 ;
+}
+
+body {
+    font-size: 0.9em;
+    line-height: 1.4em;
+    font-family: "Verdana", sans-serif;
+    text-align: left;
+    padding-top: 40px;
+    padding-bottom: 50px;
+    width: 750px;
+    margin-left: auto;
+    margin-right: auto;
+    background: var(--bg-color);
+    color: var(--text-color);
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+/*****************************************************************************/
+
+a {
+    color: var(--text-color);
+    text-decoration: none;
+    background: var(--link-bg);
+    transition: all 0.3s ease;
+}
+a:hover {
+    color: var(--accent-hover);
+    background: var(--accent-color);
+}
+
+a.imglink {
+    background: none;
+}
+a.imglink:hover {
+    background: none;
+}
+
+.nohighlight {
+    background: none;
+}
+.nohighlight:hover {
+    background: none;
+}
+
+/*****************************************************************************/
+
+code {
+    font-family: Inconsolata, "Courier New", monospace;
+}
+
+/* Enhanced code block styling - works with Prism.js */
+pre[class*="language-"] {
+    border-radius: 8px;
+    padding: 16px 20px !important;
+    margin: 16px 0 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border: 1px solid #3c3c3c;
+    font-size: 0.9em !important;
+    line-height: 1.5 !important;
+}
+
+code[class*="language-"] {
+    font-family: Inconsolata, "Courier New", monospace !important;
+}
+
+/* Inline code styling */
+:not(pre) > code {
+    background: var(--code-bg) !important;
+    color: var(--code-color) !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+    font-size: 0.85em !important;
+    border: 1px solid var(--code-border) !important;
+    font-family: Inconsolata, "Courier New", monospace !important;
+}
+
+/* Hide scrollbar but keep scroll capability for code blocks */
+pre {
+    overflow: auto;
+}
+pre::-webkit-scrollbar {
+    height: 0;
+    display: none;
+}
+pre {
+    -ms-overflow-style: none;  /* IE, Edge */
+    scrollbar-width: none;     /* Firefox */
+}
+
+/*****************************************************************************/
+/* Normal tables */
+table {
+    border-collapse:collapse;
+    width:100%;
+    text-align:center;
+}
+td, tr  {
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    transition: color 0.3s ease;
+}
+th {
+    border-bottom: 2px solid var(--text-color);
+    color: var(--text-color);
+    transition: color 0.3s ease;
+}
+
+
+/*****************************************************************************/
+/* Main page title */
+h1 {
+    font: 2.1em Verdana, Sans-Serif;
+    color: var(--text-color);
+    transition: color 0.3s ease;
+}
+div#header a {
+    color: var(--text-color);
+    background: none;
+    transition: color 0.3s ease;
+}
+div#header a:hover {
+    color: var(--accent-hover);
+    background: var(--accent-color);
+}
+
+/*****************************************************************************/
+
+ul {
+    list-style-type: square;
+    margin-top: 0;
+}
+
+/*****************************************************************************/
+
+img {
+    margin-right: 10px;
+}
+
+div.caption {
+ text-align:center;
+}
+
+/*****************************************************************************/
+/* Secondary header */
+h2 {
+    font: 1.5em Verdana, Sans-Serif;
+    margin-top: 1em;
+    color: var(--text-color);
+    transition: color 0.3s ease;
+}
+div.backlink {
+    font: 1.1em Verdana, Sans-Serif;
+    margin-left: 2em;
+    color: var(--text-color);
+    transition: color 0.3s ease;
+}
+/* Page and header backgrounds */
+div#content{
+    background: var(--content-bg);
+    padding: 1px 130px 30px 20px;
+    width: 600px;
+    transition: background 0.3s ease;
+}
+
+div#header{
+    background: var(--header-bg);
+    padding: 20px 20px 1px 20px;
+    transition: background 0.3s ease;
+}
+
+ul#navlist{
+    text-indent: -20px;
+}
+
+/*****************************************************************************/
+/* Footer styles */
+div#feed {
+    clear: both;
+    padding: 0px 0px 20px 20px;
+    text-align: right;
+    width: 600px;
+    margin-left: auto;
+    margin-right: 0;
+}
+
+/* Footer icon styling */
+div#feed a {
+    background: none !important;
+    font-size: 1.4em;
+    margin-right: 8px;
+    color: var(--text-color);
+    transition: color 0.3s ease;
+}
+
+div#feed a:hover {
+    background: none !important;
+    color: var(--accent-color);
+}
+
+
+/*****************************************************************************/
+/* Table of contents */
+div#TOC {
+    padding-left: 20px;
+    padding-right: 20px;
+    display: inline-block
+}
+div#TOC h2 {
+    margin-top: 0;
+}
+div#TOC a  {
+    padding-left: 10px;
+}
+
+/*****************************************************************************/
+/* Top navigation bar */
+ul#navlist {
+    padding-left: 20px;
+    padding-bottom: 0;
+}
+ul#navlist li {
+    display: inline;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+ul#navlist li#active {
+    font-weight: bold;
+}
+
+/* RSS feed icon in top menu */
+.icon
+{
+    font-family: "icons";
+    font-size: 14px;
+}
+
+/*****************************************************************************/
+/*  Nice simple horizontal rule */
+hr {
+    height: 1px;
+    border: none;
+}
+
+/*  Headshot on the "About" page */
+#headshot {
+    float: right;
+    margin-top:20px;
+    margin-right:-110px;
+}
+
+/*****************************************************************************/
+/*  Modifications for small screens */
+@media only screen and (max-width: 750px) {
+    body {
+        width: auto;
+    }
+    div#content {
+        width: auto;
+        padding: 1px 10px 30px 20px;
+    }
+    p > img {
+        max-width: 100%;
+        height: auto;
+    }
+    a:not(.imglink) > img {
+        max-width: 100%;
+        height: auto;
+    }
+    #headshot {
+        display: none;
+    }
+
+    div#copyright{
+        margin-right: 10px;
+    }
+}
+
+

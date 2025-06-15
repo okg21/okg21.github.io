@@ -12,7 +12,8 @@
     gtag('config', 'G-700BFM0B8S');
     </script>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <title>about</title>
 </head>
 
@@ -23,17 +24,17 @@
 
         <div>
             <ul id="navlist">
-                <li><a href="projects.html">projects</a></li>
-                <li><a href="research.html">research</a></li>
-                <li><a href="blog.html">blog</a></li>
-                <li><a href="index.html">about</a></li>
+                <li><a href="/projects/">projects</a></li>
+                <li><a href="/research/">research</a></li>
+                <li><a href="/blog/">blog</a></li>
+                <li><a href="/">about</a></li>
             </ul>
         </div>
     </div>
 
     <div id="content">
         <!-- End header -->
-        <img id="headshot" src="vesikalik.png" width="180">
+        <img id="headshot" src="assets/images/vesikalik.png" width="180">
         <style type="text/css" rel="stylesheet">
             ul {
                 list-style-type: none;
@@ -43,12 +44,12 @@
         <h2>Now</h2>
         <ul>
             <li>Junior Data Engineer at Jotform</li>
-            <li>Computer Science Masters Student at Bilkent University</li>
-            <li>Research Asistant at Bilkent University</li>
             <!-- <li>Teaching Asistant at Bilkent University</li> -->
         </ul>
         <h2>Before</h2>
         <ul>
+            <li>Computer Science Masters Student at Bilkent University</li>
+            <li>Research Asistant at Bilkent University</li>
             <li>Machine Learning Intern at Netcad</li>
             <li>Machine Learning Intern at Turkcell</li>
             <li>Sofware Developer Intern at HAVELSAN</li>
@@ -57,7 +58,7 @@
         </ul>
         <h2>Resume</h2>
         <ul>
-            <li><a href="ökg_resume.pdf">PDF</a> (updated 02/2024)</li>
+            <li><a href="assets/images/ökg_resume.pdf">PDF</a> (updated 06/2025)</li>
         </ul>
         <h2>Interests</h2>
         <ul>
@@ -74,11 +75,53 @@
     </div>
     <div id="feed">
         <p>
-            <a href=""><i class="fas fa-home"></i></a>&nbsp;
+            <a href="/"><i class="fas fa-home"></i></a>&nbsp;
             <a href="mailto:omerkaan01@gmail.com"><i class="fas fa-envelope"></i></a>&nbsp;
             <a href="https://github.com/okg21"><i class="fab fa-github"></i></a>&nbsp;
+            <a href="https://linkedin.com/in/okg21"><i class="fab fa-linkedin"></i></a>&nbsp;
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode"><i class="fas fa-moon"></i></button>
         </p>
     </div>
+
+    <!-- Enhanced Analytics -->
+    <script src="/assets/js/analytics-enhanced.js"></script>
+    
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const toggleButton = document.querySelector('.theme-toggle i');
+            const currentTheme = html.getAttribute('data-theme');
+            
+            if (currentTheme === 'dark') {
+                html.removeAttribute('data-theme');
+                toggleButton.className = 'fas fa-moon';
+                localStorage.setItem('theme', 'light');
+                // Track theme toggle
+                if (window.analyticsHelpers) {
+                    window.analyticsHelpers.trackThemeToggle('light');
+                }
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                toggleButton.className = 'fas fa-sun';
+                localStorage.setItem('theme', 'dark');
+                // Track theme toggle
+                if (window.analyticsHelpers) {
+                    window.analyticsHelpers.trackThemeToggle('dark');
+                }
+            }
+        }
+
+        // Load saved theme on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme');
+            const toggleButton = document.querySelector('.theme-toggle i');
+            
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                toggleButton.className = 'fas fa-sun';
+            }
+        });
+    </script>
 </body>
 
 </html>

@@ -1,0 +1,86 @@
+<html lang="en"><head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-700BFM0B8S"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-700BFM0B8S');
+    </script>
+    <!-- Enhanced Analytics -->
+    <script src="/assets/js/analytics-enhanced.js"></script>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <title></title>
+    </head>
+
+
+    
+    <body>
+    <div id="header">
+    <h1><a href="/">Ömer Kaan Gürbüz</a> // research</h1>
+    
+    <div>
+    <ul id="navlist">
+    <li><a href="/projects/">projects</a></li>
+    <li><a href="/research/">research</a></li>
+    <li><a href="/blog/">blog</a></li>
+    <li><a href="/">about</a></li>
+    </ul>
+    </div>
+    </div>
+    
+    <div id="content">
+    <!-- End header -->
+    
+    <h2></h2>
+    <table class="blog">
+    <tbody>
+    <tr>
+    <td>29-11-2023</td>
+    <td><a href="https://aclanthology.org/2025.genaidetect-1.11/">I Know You Did Not Write That! A Sampling Based Watermarking Method for Identifying Machine Generated Text</a></td>
+    </tr>
+    </tbody></table>
+    </div>
+    <div id="feed">
+        <p>
+            <a href="/"><i class="fas fa-home"></i></a>&nbsp;
+            <a href="mailto:omerkaan01@gmail.com"><i class="fas fa-envelope"></i></a>&nbsp;
+            <a href="https://github.com/okg21"><i class="fab fa-github"></i></a>&nbsp;
+            <a href="https://linkedin.com/in/okg21"><i class="fab fa-linkedin"></i></a>&nbsp;
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode"><i class="fas fa-moon"></i></button>
+        </p>
+    </div>  
+    
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const toggleButton = document.querySelector('.theme-toggle i');
+            const currentTheme = html.getAttribute('data-theme');
+            
+            if (currentTheme === 'dark') {
+                html.removeAttribute('data-theme');
+                toggleButton.className = 'fas fa-moon';
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                toggleButton.className = 'fas fa-sun';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Load saved theme on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme');
+            const toggleButton = document.querySelector('.theme-toggle i');
+            
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                toggleButton.className = 'fas fa-sun';
+            }
+        });
+    </script>
+    
+    </body></html>

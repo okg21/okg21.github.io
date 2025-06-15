@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-700BFM0B8S"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-700BFM0B8S');
+    </script>
+    <!-- Enhanced Analytics -->
+    <script src="/assets/js/analytics-enhanced.js"></script>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/assets/css/style.css"/>
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Atom feed"/>
+    <link href="/fonts/inconsolata/v30/inconsolata.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <title>BigQuery Explorer: Actually Useful Scheduled Query Tracking</title>
+    <style>
+    /* Mix serif for personality */
+    h2 {
+        font-family: "Georgia", serif;
+        font-style: italic;
+    }
+
+    /* Occasional handwritten feel */
+    .quirky {
+        font-family: "Comic Neue", cursive;
+        transform: rotate(-1deg);
+    }
+    </style>
+</head>
+
+<body>
+    <div id="header">
+        <h1>
+            <a href="/">Ömer Kaan Gürbüz</a>
+             // blog
+        </h1>
+
+        <div>
+            <ul id="navlist">
+            <li><a href="/projects/">projects</a></li>
+            <li><a href="/research/">research</a></li>
+            <li><a href="/blog/">blog</a></li>
+            <li><a href="/">about</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="content">
+        <!-- End header -->
+
+        
+        <h2>Why I Built This</h2>
+        
+        <p>I've been working as a data engineer for the last 8 months with BigQuery as our main tech stack. It didn't take long to realize that the BigQuery web UI is... challenging to work with efficiently.</p>
+        
+        <p>Browsing scheduled queries, navigating between pages - it all takes forever. Since I spend most of my time in Cursor anyway, I started exploring BigQuery extensions:</p>
+        
+        <ul>
+            <li>First one I tried could only run queries → lacked resource exploration and dry run functionality (which is a must!)</li>
+            <li>Then found <a href="https://github.com/minodisk/bigquery-runner">minodisk's</a> extension which was much better - had resource searching and dry run, making BigQuery work way easier</li>
+        </ul>
+        
+        <p>I used it for a while but still had to open the BigQuery web UI for one key thing: <strong>checking scheduled queries</strong>. I need to monitor scheduled queries regularly for improvements and bug fixes.</p>
+        
+        <p>Unfortunately, I couldn't find any extension that handled scheduled queries well. So instead of reinventing the wheel, I forked minodisk's extension and added the missing piece</p>
+
+        <h2>What I Built</h2>
+
+        <h3>Prerequisites</h3>
+        <p>Before diving into the code, make sure your service account or principal has the right permissions:</p>
+        
+        <ul>
+            <li><code>bigquery.transfers.get</code> and <code>bigquery.transfers.list</code> - To access scheduled query configs and runs</li>
+            <li><code>bigquery.jobs.get</code> - To fetch BigQuery job details</li>
+        </ul>
+        
+
+        <h3>Scheduled Query Tracking in VS Code</h3>
+        <p>The core feature: see your scheduled queries and their execution history without leaving your editor.</p>
+
+        <p><strong>Step 1:</strong> First, I needed to list all scheduled queries for a project:</p>
+
+        <pre><code class="language-typescript">// Simple: Get all scheduled queries
+async function listScheduledQueries(projectId: string, region: string) {
+  const client = new DataTransferServiceClient();
+  const parent = `projects/${projectId}/locations/${region}`;
+  
+  const [configs] = await client.listTransferConfigs({
+    parent,
+    dataSourceIds: ['scheduled_query']  // Only get scheduled queries
+  });
+  
+  return configs;
+}</code></pre>
+
+        <p><strong>Step 2:</strong> Then get the execution history for each scheduled query:</p>
+
+        <pre><code class="language-typescript">// Get recent runs for a scheduled query
+async function getRunHistory(configName: string, maxResults = 5) {
+  const [runs] = await client.listTransferRuns({
+    parent: configName,
+    states: ['SUCCEEDED', 'FAILED', 'CANCELLED'],
+    pageSize: maxResults
+  });
+  
+  return runs;
+}</code></pre>
+
+        <p><strong>Step 3:</strong> The tricky part - correlating transfer runs with actual BigQuery jobs:</p>
+
+        <pre><code class="language-typescript">// Complex: Find the BigQuery job for each scheduled query run
+async function getBigQueryJobDetails(projectId: string, runId: string) {
+  const bigquery = new BigQuery({ projectId });
+  const jobId = `scheduled_query_${runId}`;  // BigQuery's naming pattern
+  
+  try {
+    const [job] = await bigquery.job(jobId).get();
+    const [metadata] = await job.getMetadata();
+    
+    return {
+      jobId: job.id,
+      status: metadata.status,
+      statistics: metadata.statistics,
+      configuration: metadata.configuration
+    };
+  } catch (error) {
+    // Job not found - this happens sometimes
+    return null;
+  }
+}</code></pre>
+
+        <p><strong>Step 4:</strong> Finally, extract useful information from the job details:</p>
+
+                 <pre><code class="language-typescript">// Extract query and destination info
+if (jobDetails?.configuration?.query) {
+  const query = jobDetails.configuration.query.query;
+  const stats = jobDetails.statistics;
+  
+  console.log(`Query: ${query.substring(0, 100)}...`);
+  console.log(`Bytes processed: ${stats.totalBytesProcessed}`);
+  
+  // Calculate duration (BigQuery timestamps are Unix timestamps in milliseconds as strings)
+  if (stats.endTime && stats.startTime) {
+    const duration = Number(stats.endTime) - Number(stats.startTime);
+    console.log(`Duration: ${(duration / 1000).toFixed(2)}s`);
+  }
+  
+  // Get destination table if available
+  if (jobDetails.configuration.query.destinationTable) {
+    const table = jobDetails.configuration.query.destinationTable;
+    console.log(`Destination: ${table.projectId}.${table.datasetId}.${table.tableId}`);
+  }
+}</code></pre>
+
+        <blockquote>
+        <p><strong>💡 Duration Calculation Note:</strong> BigQuery returns timestamps as Unix timestamps in milliseconds formatted as strings (e.g., "1749989041841"). That's why we use <code>Number()</code> to convert them before calculating the difference. This was one of those "fun" API quirks I discovered while building this!</p>
+        </blockquote>
+
+        <p>Now I can quickly check if my data pipelines are running smoothly without context switching to the BigQuery console! 🎉</p>
+
+        <h3>Sample Output</h3>
+        <p>Here's what the code produces when you run it:</p>
+
+        <pre><code class="language-bash">📋 Found 2 scheduled queries
+
+   [1] shakespeare_test_top_1
+       Schedule: every day 12:04
+       State: SUCCEEDED
+
+📊 Found 36 recent runs
+
+🔍 Correlating with BigQuery jobs...
+
+   Run 1:
+   - State: SUCCEEDED
+   - Start Time: 2024-01-15T12:04:00.000Z
+   - BigQuery Job ID: scheduled_query_68663782-0000-2154-9748-34c7e91daa93
+   - Query: select * from `testDataset.shakespeare_test_1` order by 1 desc limit 1...
+   - Bytes processed: 335
+   - Duration: 1.59s
+   - Destination: my-project.testDataset.shakespeare_top_1</code></pre>
+
+
+        <h2>What's Next</h2>
+
+        <p>Planning to add ability to create scheduled queries from the extension.</p>
+        <p>In Cursor, there is no way of communicating the extentions with the assistant, but I would like to find a way to implement a system that automaticly adds table schemas to Cursor's knowledge base.</p>
+
+        <hr>
+
+        <p><em>Forked from <a href="https://github.com/minodisk/bigquery-runner">minodisk/bigquery-runner</a> because it already works great. Check it out!</em></p>
+    
+    <p>Check the extension at <a href="https://marketplace.visualstudio.com/items?itemName=okg21.bigquery-explorer">VS Code Marketplace</a></p>
+    <p>Check the code at <a href="https://github.com/okg21/bigquery-runner">GitHub</a></p>
+      </div>
+
+    
+    <!-- Begin footer -->
+    <div id="feed">
+        <p>
+            <a href="/"><i class="fas fa-home"></i></a>&nbsp;
+            <a href="mailto:omerkaan01@gmail.com"><i class="fas fa-envelope"></i></a>&nbsp;
+            <a href="https://github.com/okg21"><i class="fab fa-github"></i></a>&nbsp;
+            <a href="https://linkedin.com/in/okg21"><i class="fab fa-linkedin"></i></a>&nbsp;
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode"><i class="fas fa-moon"></i></button>
+        </p>
+    </div>
+    
+    <!-- Prism.js JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const toggleButton = document.querySelector('.theme-toggle i');
+            const currentTheme = html.getAttribute('data-theme');
+            
+            if (currentTheme === 'dark') {
+                html.removeAttribute('data-theme');
+                toggleButton.className = 'fas fa-moon';
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                toggleButton.className = 'fas fa-sun';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Load saved theme on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme');
+            const toggleButton = document.querySelector('.theme-toggle i');
+            
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                toggleButton.className = 'fas fa-sun';
+            }
+        });
+    </script>
+</body>
+</html> 

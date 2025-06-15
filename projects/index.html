@@ -11,11 +11,13 @@
 
     gtag('config', 'G-700BFM0B8S');
     </script>
+    <!-- Enhanced Analytics -->
+    <script src="/assets/js/analytics-enhanced.js"></script>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="/style.css"/>
+    <link rel="stylesheet" href="/assets/css/style.css"/>
     <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Atom feed"/>
     <link href="/fonts/inconsolata/v30/inconsolata.css" rel="stylesheet">
-    <link href="/fonts/font-awesome/5.13.0/css/all.min.css" rel=stylesheet>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <title>projects</title>
 </head>
 
@@ -30,10 +32,10 @@
 
         <div>
             <ul id="navlist">
-            <li><a href="projects.html">projects</a></li>
-            <li><a href="research.html">research</a></li>
-            <li><a href="blog.html">blog</a></li>
-            <li><a href="index.html">about</a></li>
+            <li><a href="/projects/">projects</a></li>
+            <li><a href="/research/">research</a></li>
+            <li><a href="/blog/">blog</a></li>
+            <li><a href="/">about</a></li>
             </ul>
             </div>
 
@@ -41,14 +43,36 @@
 
     <div id="content">
         <!-- End header -->
-        <link rel="stylesheet" href="style.css">
+
+        <h2>2025</h2>
+        <div class="project">
+            <table>
+                <tr>
+                    <td>
+                        <a href="" class="imglink">
+                            <img src="/assets/images/bq-explorer-icon.png" alt=thumbnail width=100 height=100 loading=lazy>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="">BigQuery Explorer</a>
+                        <br>
+                        A VS Code extension for <mark>BigQuery</mark> with scheduled query tracking. Fork of <a href="https://github.com/minodisk/bigquery-runner">minodisk/bigquery-runner</a> with added features for viewing and tracking history of scheduled queries, search functionality, and API request batching.
+                        <br>
+                        <a href="https://marketplace.visualstudio.com/items?itemName=okg21.bigquery-explorer">[marketplace]</a>
+                        <a href="https://github.com/okg21/bigquery-runner">[github]</a>
+                        <a href="/blog/posts/bq-extension-blog-template.html">[blog]</a>
+                        <br>
+                    </td>
+                </tr>
+            </table>
+        </div>
         <h2>2024</h2>
         <div class="project">
             <table>
                 <tr>
                     <td>
                         <a href="" class="imglink">
-                            <img src="voronoi.jpeg" alt=thumbnail width=100 height=100 loading=lazy>
+                            <img src="/assets/images/voronoi.jpeg" alt=thumbnail width=100 height=100 loading=lazy>
                         </a>
                     </td>
                     <td>
@@ -56,7 +80,7 @@
                         <br>
                         A project that combines <mark>Conway's Game of Life</mark> with <mark>Voronoi Diagrams</mark>. The project is implemented using p5.js and d3.js.
                         <br>
-                        <a href="voronoi-game-of-life.html">[demo]</a>
+                        <a href="/projects/demos/voronoi-game-of-life.html">[demo]</a>
                     </td>
                 </tr>
             </table>
@@ -66,7 +90,7 @@
                 <tr>
                     <td>
                         <a href="" class="imglink">
-                            <img src="epic.webp" alt=thumbnail width=100 height=100 loading=lazy>
+                            <img src="/assets/images/epic.webp" alt=thumbnail width=100 height=100 loading=lazy>
                         </a>
                     </td>
                     <td>
@@ -83,7 +107,7 @@
                 <tr>
                     <td>
                         <a href="" class="imglink">
-                            <img src="c-board-game.webp" alt=thumbnail width=100 height=100 loading=lazy>
+                            <img src="/assets/images/c-board-game.webp" alt=thumbnail width=100 height=100 loading=lazy>
                         </a>
                     </td>
                     <td>
@@ -99,7 +123,7 @@
                 <tr>
                     <td>
                         <a href="" class="imglink">
-                            <img src="poetry.webp" alt=thumbnail width=100 height=100 loading=lazy>
+                            <img src="/assets/images/poetry.webp" alt=thumbnail width=100 height=100 loading=lazy>
                         </a>
                     </td>
                     <td>
@@ -115,7 +139,7 @@
             </table>
         </div>
 </div>
-<link rel="stylesheet" href="style.css">
+
 <h2></h2>
 <table class="projects">
 <tbody><tr></tbody></table>
@@ -124,8 +148,39 @@
 </div>
 <div id="feed">
     <p>
-        <a href=""><i class="fas fa-home"></i></a>&nbsp;
+        <a href="/"><i class="fas fa-home"></i></a>&nbsp;
         <a href="mailto:omerkaan01@gmail.com"><i class="fas fa-envelope"></i></a>&nbsp;
         <a href="https://github.com/okg21"><i class="fab fa-github"></i></a>&nbsp;
+        <a href="https://linkedin.com/in/okg21"><i class="fab fa-linkedin"></i></a>&nbsp;
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode"><i class="fas fa-moon"></i></button>
     </p>
 </div>  
+
+<script>
+    function toggleTheme() {
+        const html = document.documentElement;
+        const toggleButton = document.querySelector('.theme-toggle i');
+        const currentTheme = html.getAttribute('data-theme');
+        
+        if (currentTheme === 'dark') {
+            html.removeAttribute('data-theme');
+            toggleButton.className = 'fas fa-moon';
+            localStorage.setItem('theme', 'light');
+        } else {
+            html.setAttribute('data-theme', 'dark');
+            toggleButton.className = 'fas fa-sun';
+            localStorage.setItem('theme', 'dark');
+        }
+    }
+
+    // Load saved theme on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedTheme = localStorage.getItem('theme');
+        const toggleButton = document.querySelector('.theme-toggle i');
+        
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            toggleButton.className = 'fas fa-sun';
+        }
+    });
+</script>
